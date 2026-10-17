@@ -1,0 +1,6 @@
+{
+  "name": "يومي",
+  "description": "تطبيق ملاحظات وتنظيم يومي للطلاب (مدرسة، دروس، مذاكرة)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
