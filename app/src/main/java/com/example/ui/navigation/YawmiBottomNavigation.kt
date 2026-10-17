@@ -41,6 +41,10 @@ import com.example.ui.theme.ActivityStudy
 import com.example.ui.theme.InkPrimary
 import com.example.ui.theme.InkSecondary
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.widthIn
+
 enum class Screen(
     val route: String,
     val titleArabic: String,
@@ -62,10 +66,14 @@ fun YawmiBottomBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .navigationBarsPadding()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        contentAlignment = Alignment.Center
     ) {
         GlassCard(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .widthIn(max = 560.dp),
             shape = RoundedCornerShape(32.dp),
             borderWidth = 1.dp
         ) {
@@ -93,13 +101,13 @@ fun YawmiBottomBar(
                             ) {
                                 onNavigate(screen.route)
                             }
-                            .padding(vertical = 6.dp)
+                            .padding(vertical = 4.dp)
                             .testTag("nav_item_${screen.route}")
                     ) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
-                                .size(36.dp)
+                                .size(34.dp)
                                 .clip(CircleShape)
                                 .background(if (isSelected) ActivityStudy.copy(alpha = 0.35f) else Color.Transparent)
                         ) {
@@ -107,14 +115,15 @@ fun YawmiBottomBar(
                                 imageVector = if (isSelected) screen.selectedIcon else screen.unselectedIcon,
                                 contentDescription = screen.titleArabic,
                                 tint = if (isSelected) InkPrimary else InkSecondary,
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(22.dp)
                             )
                         }
+                        Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = screen.titleArabic,
+                            color = if (isSelected) InkPrimary else InkSecondary,
                             style = MaterialTheme.typography.labelMedium.copy(
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
-                                color = if (isSelected) InkPrimary else InkSecondary,
                                 fontSize = 12.sp
                             )
                         )

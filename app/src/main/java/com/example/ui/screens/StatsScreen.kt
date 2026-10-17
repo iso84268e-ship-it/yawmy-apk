@@ -109,247 +109,269 @@ fun StatsScreen(
         }
     }
 
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 20.dp),
-        contentPadding = PaddingValues(top = 16.dp, bottom = 130.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
     ) {
-        // Title
-        item {
-            Text(
-                text = "إحصائياتي",
-                style = MaterialTheme.typography.displayLarge.copy(
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 38.sp,
-                    color = InkPrimary
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .androidx.compose.foundation.layout.widthIn(max = 600.dp)
+                .padding(horizontal = 20.dp),
+            contentPadding = PaddingValues(top = 16.dp, bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Title
+            item {
+                Text(
+                    text = "إحصائياتي",
+                    color = InkPrimary,
+                    style = MaterialTheme.typography.displayLarge.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 36.sp
+                    )
                 )
-            )
-        }
+            }
 
-        // Card 1: Streak Card
-        item {
-            GlassCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("streak_card")
-            ) {
-                Column(
+            // Card 1: Streak Card
+            item {
+                GlassCard(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(22.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .testTag("streak_card")
                 ) {
-                    Text(
-                        text = "${streakDays.toArabicDigits()} أيام التزام متتالية",
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontWeight = FontWeight.ExtraBold,
-                            color = InkPrimary,
-                            fontSize = 26.sp
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(18.dp))
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(22.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        for (i in 0..6) {
-                            val isActive = i < streakDays
-                            Box(
-                                modifier = Modifier
-                                    .size(34.dp)
-                                    .clip(CircleShape)
-                                    .background(if (isActive) ActivityStudy else White.copy(alpha = 0.35f))
+                        Text(
+                            text = "${streakDays.toArabicDigits()} أيام التزام متتالية",
+                            color = InkPrimary,
+                            style = MaterialTheme.typography.headlineLarge.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = 24.sp
                             )
+                        )
+                        Spacer(modifier = Modifier.height(18.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            for (i in 0..6) {
+                                val isActive = i < streakDays
+                                Box(
+                                    modifier = Modifier
+                                        .size(34.dp)
+                                        .clip(CircleShape)
+                                        .background(if (isActive) ActivityStudy else Color(0x331B2340))
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
 
-        // Card 2: Daily Study Hours Chart
-        item {
-            GlassCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("daily_hours_chart")
-            ) {
-                Column(
+            // Card 2: Daily Study Hours Chart
+            item {
+                GlassCard(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp)
+                        .testTag("daily_hours_chart")
                 ) {
-                    Text(
-                        text = "ساعات المذاكرة يومياً",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = InkPrimary,
-                            fontSize = 17.sp
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    val maxDailyHours = (dailyHours.maxOrNull() ?: 0f).coerceAtLeast(3f)
-
-                    // Vertical bars
-                    Row(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(140.dp)
-                            .padding(horizontal = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Bottom
+                            .padding(20.dp)
                     ) {
-                        dailyHours.forEachIndexed { idx, hours ->
-                            val heightFraction = if (hours > 0f) {
-                                (hours / maxDailyHours).coerceIn(0.12f, 1f)
-                            } else 0.05f
+                        Text(
+                            text = "ساعات المذاكرة يومياً",
+                            color = InkPrimary,
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 17.sp
+                            )
+                        )
 
+                        val allZero = dailyHours.all { it == 0f }
+                        if (allZero) {
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(
+                                text = "لا توجد ساعات مذاكرة مسجلة هذا الأسبوع بعد (٠ س)",
+                                color = InkSecondary,
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 13.sp
+                                )
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        val maxDailyHours = (dailyHours.maxOrNull() ?: 0f).coerceAtLeast(3f)
+
+                        // Vertical bars
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(130.dp)
+                                .padding(horizontal = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.Bottom
+                        ) {
+                            dailyHours.forEachIndexed { idx, hours ->
+                                val heightFraction = if (hours > 0f) {
+                                    (hours / maxDailyHours).coerceIn(0.12f, 1f)
+                                } else 0.08f
+
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Bottom,
+                                    modifier = Modifier.fillMaxHeight()
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .width(32.dp)
+                                            .fillMaxHeight(fraction = heightFraction)
+                                            .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 6.dp, bottomEnd = 6.dp))
+                                            .background(if (hours > 0f) ActivityStudy else Color(0x2E1B2340))
+                                    )
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    Text(
+                                        text = dayLetters[idx],
+                                        color = InkPrimary,
+                                        style = MaterialTheme.typography.labelMedium.copy(
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 15.sp
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Card 3: Hours by Subject or Empty State
+            item {
+                GlassCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("subject_hours_card")
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(
+                            text = "حسب المادة",
+                            color = InkPrimary,
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 17.sp
+                            )
+                        )
+
+                        if (subjectHoursList.isEmpty()) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Bottom,
-                                modifier = Modifier.fillMaxHeight()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 14.dp)
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .width(32.dp)
-                                        .fillMaxHeight(fraction = heightFraction)
-                                        .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp, bottomStart = 6.dp, bottomEnd = 6.dp))
-                                        .background(if (hours > 0f) ActivityStudy else White.copy(alpha = 0.35f))
-                                )
-                                Spacer(modifier = Modifier.height(10.dp))
                                 Text(
-                                    text = dayLetters[idx],
-                                    style = MaterialTheme.typography.labelMedium.copy(
+                                    text = "لم تسجل جلسات تركيز بعد",
+                                    color = InkPrimary,
+                                    style = MaterialTheme.typography.bodyMedium.copy(
                                         fontWeight = FontWeight.Bold,
-                                        color = InkPrimary,
-                                        fontSize = 14.sp
+                                        fontSize = 15.sp
+                                    )
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = "أنجز جلسات مذاكرة لتظهر هنا تفاصيل ساعات كل مادة",
+                                    color = InkSecondary,
+                                    style = MaterialTheme.typography.bodySmall.copy(
+                                        textAlign = TextAlign.Center,
+                                        fontSize = 13.sp
                                     )
                                 )
                             }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Card 3: Hours by Subject or Empty State
-        item {
-            GlassCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("subject_hours_card")
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Text(
-                        text = "حسب المادة",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = InkPrimary,
-                            fontSize = 17.sp
-                        )
-                    )
-
-                    if (subjectHoursList.isEmpty()) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 14.dp)
-                        ) {
-                            Text(
-                                text = "لم تسجل جلسات تركيز بعد",
-                                style = MaterialTheme.typography.bodyMedium.copy(
-                                    color = InkSecondary,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            )
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Text(
-                                text = "أنجز جلسات مذاكرة لتظهر هنا تفاصيل ساعات كل مادة",
-                                style = MaterialTheme.typography.bodySmall.copy(
-                                    color = InkSecondary,
-                                    textAlign = TextAlign.Center
-                                )
-                            )
-                        }
-                    } else {
-                        val maxHours = (subjectHoursList.maxOfOrNull { it.second } ?: 1f).coerceAtLeast(1f)
-                        subjectHoursList.forEach { (name, hours, _) ->
-                            val hoursInt = hours.toInt()
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "${hoursInt.toArabicDigits()} س",
-                                    style = MaterialTheme.typography.titleSmall.copy(
-                                        fontWeight = FontWeight.Bold,
+                        } else {
+                            val maxHours = (subjectHoursList.maxOfOrNull { it.second } ?: 1f).coerceAtLeast(1f)
+                            subjectHoursList.forEach { (name, hours, _) ->
+                                val hoursInt = hours.toInt()
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "${hoursInt.toArabicDigits()} س",
                                         color = InkPrimary,
-                                        fontSize = 15.sp
-                                    ),
-                                    modifier = Modifier.width(42.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                LinearProgressIndicator(
-                                    progress = { (hours / maxHours).coerceIn(0.1f, 1f) },
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(10.dp)
-                                        .clip(RoundedCornerShape(5.dp)),
-                                    color = ActivityStudy,
-                                    trackColor = White.copy(alpha = 0.35f),
-                                    strokeCap = StrokeCap.Round
-                                )
-                                Spacer(modifier = Modifier.width(12.dp))
-                                Text(
-                                    text = name,
-                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.titleSmall.copy(
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 15.sp
+                                        ),
+                                        modifier = Modifier.width(42.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    LinearProgressIndicator(
+                                        progress = { (hours / maxHours).coerceIn(0.1f, 1f) },
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .height(10.dp)
+                                            .clip(RoundedCornerShape(5.dp)),
+                                        color = ActivityStudy,
+                                        trackColor = Color(0x261B2340),
+                                        strokeCap = StrokeCap.Round
+                                    )
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Text(
+                                        text = name,
                                         color = InkPrimary,
-                                        fontSize = 15.sp
-                                    ),
-                                    modifier = Modifier.width(68.dp)
-                                )
+                                        style = MaterialTheme.typography.bodyMedium.copy(
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 15.sp
+                                        ),
+                                        modifier = Modifier.width(68.dp)
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        // Card 4: Most Active Time
-        item {
-            GlassCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("most_active_card")
-            ) {
-                Column(
+            // Card 4: Most Active Time
+            item {
+                GlassCard(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(18.dp)
+                        .testTag("most_active_card")
                 ) {
-                    val activeTimeText = if (allLogs.isEmpty()) {
-                        "أنشط وقت لك: يظهر تلقائياً بعد إكمال جلسات المذاكرة والتركيز في جدولك."
-                    } else {
-                        "أنشط وقت لك: من ٥:٣٠ إلى ٧:٠٠ مساءً، تكمل فيه أكثر جلساتك."
-                    }
-                    Text(
-                        text = activeTimeText,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold,
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(18.dp)
+                    ) {
+                        val activeTimeText = if (allLogs.isEmpty()) {
+                            "أنشط وقت لك: يظهر تلقائياً بعد إكمال جلسات المذاكرة والتركيز في جدولك."
+                        } else {
+                            "أنشط وقت لك: من ٥:٣٠ إلى ٧:٠٠ مساءً، تكمل فيه أكثر جلساتك."
+                        }
+                        Text(
+                            text = activeTimeText,
                             color = InkPrimary,
-                            lineHeight = 24.sp,
-                            fontSize = 15.sp
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                lineHeight = 24.sp,
+                                fontSize = 15.sp
+                            )
                         )
-                    )
+                    }
                 }
             }
         }

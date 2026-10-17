@@ -94,12 +94,16 @@ fun TodayScreen(
         "$dayName · $dayNum $monthName"
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
+    ) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .androidx.compose.foundation.layout.widthIn(max = 600.dp)
                 .padding(horizontal = 20.dp),
-            contentPadding = PaddingValues(top = 16.dp, bottom = 140.dp),
+            contentPadding = PaddingValues(top = 16.dp, bottom = 80.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Top Header: Date & Title & Action icons
@@ -358,7 +362,7 @@ fun TodayScreen(
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(start = 24.dp, bottom = 100.dp)
+                .padding(start = 24.dp, bottom = 16.dp)
                 .testTag("add_session_fab")
         ) {
             Row(
